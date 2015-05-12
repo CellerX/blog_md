@@ -1,0 +1,35 @@
+![alt class='hidden'](https://blog.gintoki.cn/content/images/2015/05/yading2.jpg#thumb)
+##1. 解决加载慢问题</br>
+国内不能上google，替换并注释掉需要出墙加载的js
+	1. 自己下载jquery1.9.1.min.js。
+	2. 在default.hbs中替换掉google的js。
+	3. 在default.hbs末端找到并删除或注释掉google gmap的js。
+</br>
+##2. 中文标签跳转问题</br>
+因为主题是英文的缘故，使用中文标签会出现url跳转问题。</br>
+在/assets/js/script.js中添加</br>
+
+    function isChinese(temp){
+	  var re=/^[\u4E00-\u9FA5]+$/;
+	  if(re.test(temp))
+		  return true;
+	  else
+		  return false;
+    };
+在default.hbs中引入中文转换拼音的jquery文件
+中文转拼音jquery[下载地址](http://blog.gintoki.cn/content/theme/nightlight_v2.0.4/assets/js/pinyin.js)修改此方法：</br>
+`$.each(searchField.listTags, function(i,e){`
+`if(isChinese(e)){`
+`var lasturl=pinyin.getFullChars(e);`
+`$('<li></li>').html('<a class="ajaxTagLink" href="/tag/'+lasturl.replace(/\s+/g, '-').toLowerCase().substring(0,lasturl.length-1)+'">'+e+'</a>').appendTo('.listTags ul');`
+`}else{`
+`$('<li></li>').html('<a class="ajaxTagLink" href="/tag/'+e.replace(/\s+/g, '-').toLowerCase()+'">'+e+'</a>').appendTo('.listTags ul');`
+`}`
+`//$('<li></li>').html('<a class="ajaxTagLink" href="/tag/'+e.replace(/\s+/g, '-').toLowerCase()+'">'+e+'</a>').appendTo('.listTags ul');`
+`});`
+##3. 替换ghostHunter.js
+js文件位置/assets/js/ghostHunter.js [下载地址](http://blog.gintoki.cn/content/theme/nightlight_v2.0.4/assets/js/ghostHunter.js)
+- 编辑ghostHunter.js对你的网站做出调整修改
+- 在ghostHunter.js中搜索blog.gintoki.cn并替换成你的域名。（注:这个操作主要是解决子域名问题，解决此问题还有其他方法我比较懒所以直接替换了）
+##4. 其他
+部分css的修改。

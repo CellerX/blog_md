@@ -1,0 +1,157 @@
+![alt class="hidden"](https://blog.gintoki.cn/content/images/2015/05/220.jpg#thumb)
+转自：Cheney的博客,原文章已删除，欢迎关注[@Cheney](https://yangchengyu.net)的博客。
+## 一、Ghost博客 
+　Ghost是基于Node.js的开源博客平台，由前WordPressUI部门主管JohnO’Nolan和WordPress开发人员HannahWolfe创立，目的是为了给用户提供一种更加纯粹的内容写作发布平台。
+
+　Ghost现在作为一个博客平台，最大的优势就在于写博客变得如此简单方便，没有任何后台管理、没有任何载入后台的等待，更重要的是，不需要用户自己再去操心购买服务器的事了。Ghost的内容写作及编辑就和Email的体验差不多，界面左边是编辑器，右边则是页面预览，添加标签等等细节功能都如此方便。
+
+## 二、申请github教育优惠购买digitalocean VPS 
+　**在这里我想说如果你还是在校学生，你可以申请github的教育优惠，获得大礼包，github的大礼包其中有一个优惠是digitalocean家VPS的$100美金优惠，附上github education申请页面[github education](http://education.github.com/)，首先选择Get the pack填写相关信息，附上一段自我介绍，在这里我建议大家上传学生证而不要使用edu邮箱申请，如果你担心个人隐私问题，你可以上传照片之前给部分地方打上马赛克提交，由于github那边审核比较慢，最好在提交申请之后几天contact一下他们，这样他们会很快回复你的邮件。github教育优惠申请下来你就可以去digitalocean官网注册邮箱了，这里你可以选择我的推广链接进行注册[digitalocean](http://www.digitalocean.com/?refcode=1304ade45320)。这样你的账户将得到10美金，digitalocean账户激活需要至少支付5美金完成，可以使用信用卡，也可以使用paypal，笔者建议使用paypal，因为考虑到安全问题，输入你的github digitalocean 优惠码，这样你的账户就有115美金了。**
+
+![alt](https://jclouds.apache.org/img/logos/digitalocean.png)
+
+## 三、我的环境 
+
+- Centos 6.5 x86_64
+- Node.js 0.10.36
+- Mysql 5.1
+- Nginx 1.6.2
+- Ghost 0.5.9-zh-full
+
+
+## 四、安装更新Centos 环境 
+
+    yum update // 更新yum源
+    yum groupinstall "Development Tools" // 安装开发组件
+	
+## 五、安装MySQL数据库 
+
+### 5.1 安装Mysql 
+    yum install mysql mysql-server // 安装mysql数据库
+    chkconfig mysqld on // mysql开机启动
+    service mysqld start // 设置mysql开机启动
+    mysql_secure_installation // 配置mysql数据库
+
+### 5.2 数据库配置 
+	Entercurrentpasswordforroot(enterfornone):
+	OK,successfullyusedpassword,movingon...
+	Setrootpassword?[Y/n] //设置mysql root密码
+	Newpassword:
+	Re-enternewpassword:
+	Passwordupdatedsuccessfully!
+	Reloadingprivilegetables..
+	...Success!
+	Removeanonymoususers?[Y/n] // 删除匿名用户
+	...Success!
+	Disallowrootloginremotely?[Y/n] // 禁止root用户远程登录
+	...Success!
+	Removetestdatabaseandaccesstoit?[Y/n] // 删除默认数据库，
+	-Droppingtestdatabase...
+	...Success!
+	-Removingprivilegesontestdatabase...
+	...Success!`
+	Reloadprivilegetablesnow?[Y/n] // 是否马上使用最新的设置
+	...Success!
+	Cleaningup...
+	Alldone!Ifyou'vecompletedalloftheabovesteps,yourMySQL
+	installationshouldnowbesecure.
+	ThanksforusingMySQL!
+	
+### 5.3 设置数据库字符编码为UTF-8 
+	使用vim编辑器打开配置文件进行修改：
+	vi /etc/my.cnf // 用vi命令打开my.cnf
+	在配置文件中添加信息(按下键盘i进行编辑)：
+	[mysqld] 
+	character-set-server=utf8
+	[mysql]
+	default-character-set=utf8
+	[client] 
+	default-character-set=utf8
+		
+设置完成后按下esc键退出编辑模式，输入:x进行保存。
+	
+### 5.4 MySQL数据库添加Ghost用户 
+	mysql -u root -p // 以root用户登录mysql数据库
+	create database ghost; // 创建一个ghost的数据库
+	grant all on 数据库名.*to 用户名@localhost Identified by "密  码"; // 新建用户指定用户权限
+
+## 六、部署Node.js环境 
+	1. yum repolist // 查看yum列表
+	2. yum install \http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm // 安装rpm包
+	3. yum install nodejs npm --enablerepo=epel // 安装npm
+	
+## 七、安装Ghost博客系统 
+
+### 7.1 下载Ghost 
+	cd /var/ // 进入var目录
+	mkdir www // 新建www目录
+	wget http://dl.ghostchina.com/Ghost-0.5.9-zh-full.zip // 下载最新Ghost 0.5.9压缩包
+	unzip Ghost-0.5.9-zh-full.zip -d ghost // 解压并创建一个Ghost目录
+
+### 7.2 进行配置Ghost文件
+	cd ghost // 进入ghos目录
+	cp config.example.js // 备份config.example.js文件
+	mv config.example.js config.js // 修改文件名
+	vim config.js // 编辑文件
+	
+	production:{  
+	    url:'http://xxx.com', // 此处改成自己的域名，没有域名可以写成IP地址。  
+	    mail:{},  
+	    database:{  
+	        client:'mysql', // 默认为sqlite3数据库，改为mysql数据库  
+	        connection:{  
+	            host:'0.0.0.0', // 把127.0.0.1改为0.0.0.0  
+	            user:'ghost', // mysql用户名 
+	            password:'ghost的密码', // mysql密码  
+	            database:'ghost', // mysql 数据库名  
+	            charset:'utf8' // utf8编码
+	        },  
+	server:{  
+	    host:'0.0.0.0', // 把127.0.0.1改为0.0.0.0  
+	    port:'2368' // 默认端口2368，若修改该端口记得在nginx中改变  
+	    }  
+	},
+
+### 7.3 测试Ghost博客
+请进入Ghost博客目录执行以下命令:
+	
+	npm install --production // 以生产方式进行安装依赖包
+	npm start --production // 运行ghost博客系统
+		
+以上配置无误，这样你就可以用你的域名来访问网站了。
+	
+## 八、安装Ngin 
+
+### 8.1 Nginx简介
+
+　Nginx ("engine x") 是一个高性能的HTTP 和反向代理服务器，也是一个 IMAP/POP3/SMTP代理服务器。Nginx是由IgorSysoev为俄罗斯访问量第二的 Rambler.ru 站点开发的，第一个公开版本0.1.0发布于2004年10月4日。其将源代码以类BSD许可证的形式发布，因它的稳定性、丰富的功能集、示例配置文件和低系统资源的消耗而闻名。2011年6月1日，nginx 1.0.4发布。在高连接并发的情况下，Nginx是Apache服务器不错的替代品。能够支持高达 50,000 个并发连接数的响应，感谢Nginx为我们选择了epoll and kqueue作为开发模型。Nginx作为负载均衡服务器：Nginx 既可以在内部直接支持 Rails 和 PHP程序对外进行服务，也可以支持作为 HTTP代理服务器对外进行服务。Nginx采用C进行编写，不论是系统资源开销还是CPU使用效率都比Perlbal 要好很多。作为邮件代理服务器：Nginx 同时也是一个非常优秀的邮件代理服务器（最早开发这个产品的目的之一也是作为邮件代理服务器），Last. fm 描述了成功且美妙的使用经验。Nginx 是一个安装非常的简单，配置文件非常简洁（还能够支持perl语法），Bugs非常少的服务器：Nginx 启动特别容易，并且几乎可以做到7*24不间断运行，即使运行数个月也不需要重新启动。你还能够不间断服务的情况下进行软件版本的升级。
+	
+### 8.2 部署Nginx
+	rpm -ivh http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm // 执行如上操作
+	yum info nginx // 查看yum的nginx信息
+	yum install nginx –y // 安装nignx
+	vim /etc/nginx/conf.d/default.conf // 编辑配置文件
+	server{
+	    listen80;
+	    server_name xxxx.com; // 这里修改成你的域名
+	    location / {
+	        proxy_pass http: // localhost:2368;
+	        proxy_set_header Host $http_host;
+	        proxy_set_header X-Real-IP $remote_addr;
+	    }
+	}
+
+### 8.3 运行Nginx
+	service nginx start // 启动服务
+	service nginx reload // 重启服务
+	
+## 九、让Ghost一直运行
+	npm install forever -g // 安装forever
+	cd /var/www/ghost // 进入ghost目录
+	NODE_ENV=production forever start index.js // 让forever从Ghost安装目录运行
+	forever list // 查看当前运行状态
+	
+	NODE_ENV=production forever restart index.js // 如果你修改了主题要想重新生效
+	
+## 十、Ghost博客系统搭建完毕
+　Ghost博客系统到这里就搭建完毕了，如果博客运行有问题，请使用日志进行查询，相比wordpress博客系统，我更喜欢ghost，ghost 它看起来简洁，清新，占用资源小，如今ghost也才发布一年多时间，还有很多地方需要完善，我们也希望ghost系统能够越做越好。
