@@ -1,0 +1,116 @@
+![alt class='hidden'](https://blog.gintoki.cn/content/images/2015/05/yading2.jpg#thumb)
+##1. 解决加载慢问题</br>
+国内不能上google，替换并注释掉需要出墙加载的js
+	1. 自己下载jquery1.9.1.min.js。
+	2. 在default.hbs中替换掉google的js。
+	3. 在default.hbs末端找到并删除或注释掉google gmap的js。
+</br>
+##2. 中文标签跳转问题</br>
+因为主题是英文的缘故，使用中文标签会出现url跳转问题。</br>
+在/assets/js/script.js中添加</br>
+
+    function isChinese(temp){
+	  var re=/^[\u4E00-\u9FA5]+$/;
+	  if(re.test(temp))
+		  return true;
+	  else
+		  return false;
+    };
+在default.hbs中引入中文转换拼音的jquery文件
+中文转拼音jquery[下载地址](http://blog.gintoki.cn/content/theme/nightlight_v2.0.4/assets/js/pinyin.js)修改此方法：</br>
+`$.each(searchField.listTags, function(i,e){`
+`if(isChinese(e)){`
+`var lasturl=pinyin.getFullChars(e);`
+`$('<li></li>').html('<a class="ajaxTagLink" href="/tag/'+lasturl.replace(/\s+/g, '-').toLowerCase().substring(0,lasturl.length-1)+'">'+e+'</a>').appendTo('.listTags ul');`
+`}else{`
+`$('<li></li>').html('<a class="ajaxTagLink" href="/tag/'+e.replace(/\s+/g, '-').toLowerCase()+'">'+e+'</a>').appendTo('.listTags ul');`
+`}`
+`//$('<li></li>').html('<a class="ajaxTagLink" href="/tag/'+e.replace(/\s+/g, '-').toLowerCase()+'">'+e+'</a>').appendTo('.listTags ul');`
+`});`
+##3. 替换ghostHunter.js
+js文件位置/assets/js/ghostHunter.js [下载地址](http://blog.gintoki.cn/content/theme/nightlight_v2.0.4/assets/js/ghostHunter.js)
+- 编辑ghostHunter.js对你的网站做出调整修改
+- 在ghostHunter.js中搜索blog.gintoki.cn并替换成你的域名。（注:这个操作主要是解决子域名问题，解决此问题还有其他方法我比较懒所以直接替换了）
+##4. 为主题添加目录
+　参考了许多 ghost 添加目录的 js 的代码，本来是想添加在 md 里，后面想想太麻烦，ghost 的系统文件也不可能去改，所以决定放到主题的 post.hbs 里。代码[引用地址](http://www.iyanlei.com/markdown_catelog.html),先附上我的效果图
+　![alt=''](https://blog.gintoki.cn/content/images/md_img/nl1.png)
+###4.1 添加 html 
+	<div class="BlogAnchor">
+    	<p>
+       		<b id="AnchorContentToggle" title="收起" style="cursor:pointer;">目录[-]</b>
+    	</p>
+    	<div class="AnchorContent" id="AnchorContent"></div>
+	</div>
+放到你目录需要显示的地方。我是放在文章内容最前面。
+
+###4.2 添加 js 
+　首先看看的你主题是否添加了 jquery 的引用，打开你的 default.hbs 让后 CTRL+F 搜索 jquery,若没有引用 jquery，请自行添加。script 代码最好放在 html 代码之后。
+
+	<script>
+	$(".postContent").find("h2,h3,h4,h5,h6").each(function(i,item){
+    var tag = $(item).get(0).localName;
+    $(item).attr("id","wow"+i);
+    $("#AnchorContent").append('<li><a class="new'+tag+' anchor-link" href="#wow'+i+'" link="#wow'+i+'">'+$(this).text()+'</a></li>');
+    $(".newh2").css("margin-left",0);
+    $(".newh3").css("margin-left",20);
+    $(".newh4").css("margin-left",40);
+    $(".newh5").css("margin-left",60);
+    $(".newh6").css("margin-left",80);
+	});
+	$("#AnchorContentToggle").click(function(){
+    var text = $(this).html();
+    if(text=="目录[-]"){
+        $(this).html("目录[+]");
+        $(this).attr({"title":"展开"});
+    }else{
+        $(this).html("目录[-]");
+        $(this).attr({"title":"收起"});
+    }
+    $("#AnchorContent").toggle();
+	});
+	</script>
+	
+###4.3 添加 CSS 
+颜色和样式可以自己修改
+
+	<style type="text/css">
+	/*导航*/
+	.BlogAnchor {
+    background: #f4f7f9;
+    padding: 10px;
+    line-height: 180%;
+	}
+	.BlogAnchor p {
+    font-size: 18px;
+    color: #15a230;
+    margin-bottom: 0.3em;
+	}
+	.BlogAnchor .AnchorContent {
+    padding: 5px 0px;
+	}
+	.BlogAnchor li{
+    text-indent: 20px;
+    font-size: 14px;
+	}
+	#AnchorContentToggle {
+    font-size: 13px;
+    font-weight: normal;
+    color: #FFF;
+    display: inline-block;
+    line-height: 20px;
+    background: #5cc26f;
+    font-style: normal;
+    padding: 1px 8px;
+    margin-right: 10px;
+	}
+	.BlogAnchor a:hover {
+    color: #5cc26f;
+	}
+	.BlogAnchor a {
+    text-decoration: none;
+	}
+	</style>
+	
+重启 Ghost 看看目录效果吧。
+	
+
