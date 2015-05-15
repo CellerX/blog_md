@@ -1,3 +1,4 @@
+![alt='封面' class='hidden'](https://blog.gintoki.cn/content/images/md_img/py_head.jpg)
 　昨天一直用iTerm运行Python ...我也是醉了，今天分别在sublime Text和Pycharm上体验了下。</br>
 　Sublime Text编写python简单易用，适合我这种初学新手，但是遇到点棘手的地方，Sublime Text 运行带有 raw_input 的时候莫名其妙的报错，google了下发现Sublime Text Command+b 运行Python控制台不支持输入，于是继续google,找到一款插件[SublimeREPL](https://github.com/wuub/SublimeREPL)，安装方法:
 　
