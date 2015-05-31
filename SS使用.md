@@ -54,3 +54,5 @@
 
 
 其他用户自己参照上面例子设置，若有疑问欢迎QQ联系我，想了解如何在服务器上搭建shadowsocks，请参考Cheney的博文【[Shadowsocks的配置与优化](https://www.yangchengyu.net/2015/05/10/linux-shadowsocks/)】
+
+q:382723500
