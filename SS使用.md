@@ -1,6 +1,7 @@
 ##Shadowsocks使用方法
 
 ###1.1软件下载
+
 　需要新版本的可以去官方地址下载，要嫌麻烦就直接用我提供的地址下载，但我可能不会及时更新到最新版。若部分地址失效请在下方留言或email我。
 
 - [官方下载地址](https://shadowsocks.com/client.html)
@@ -56,3 +57,5 @@
 其他用户自己参照上面例子设置，若有疑问欢迎QQ联系我，想了解如何在服务器上搭建shadowsocks，请参考Cheney的博文【[Shadowsocks的配置与优化](https://www.yangchengyu.net/2015/05/10/linux-shadowsocks/)】
 
 q:382723500
+
+最后提供我的免费ss服务，[点我进入](http://sspanel.gintoki.cn)。注册需要邀请码，加我q向我索取邀请码，免费名额有限先到先得。
