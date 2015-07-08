@@ -3,7 +3,7 @@
 ###1.1软件下载
 
 　需要新版本的可以去官方地址下载，要嫌麻烦就直接用我提供的地址下载，但我可能不会及时更新到最新版。若部分地址失效请在下方留言或email我。
-
+ 
 - [官方下载地址](https://shadowsocks.com/client.html)
 - [Windows版](http://aboutme.gintoki.cn/download/Shadowsocks-win-2.3.1.zip)
 - [MAC版](http://aboutme.gintoki.cn/download/ShadowsocksX-2.6.3.dmg)
